@@ -1,6 +1,6 @@
 /***************************************************************************//**
   @file         main.c
-  @author       Harshit Joshi & Eklavya Chopra & Gaurav
+  @author        Gaurav
   @date         Friday,  9 November 2018
   @brief        ASH (Ares SHell)
 *******************************************************************************/
@@ -48,7 +48,8 @@ const char rocket[] =
 int ash_cd(char **args);
 int ash_help(char **args);
 int ash_exit(char **args);
-// int ash_mkdir(char **args);
+void ash_mkdir(char *args);
+void ash_rmdir(char *args);
 /*
   List of builtin commands, followed by their corresponding functions.
  */
@@ -147,6 +148,37 @@ int ash_exit(char **args)
 
  //    return 1;
  // }
+
+/**
+   @brief Builtin command: make directory.
+   @param args List of args.  args[0] is "mkdir".  args[1] is the directory.
+   @return Always returns 1, to continue executing.
+ */
+void ash_mkdir(char *args)
+{
+    int stat = mkdir(args, 0777);// all appropriate permissions
+    if(stat==-1)
+    {
+        perror("+--- Error in mkdir ");
+    }
+}
+
+
+
+/**
+   @brief Builtin command: remove directory.
+   @param args List of args.  args[0] is "rmdir".  args[1] is the directory.
+   @return Always returns 1, to continue executing.
+ */
+void ash_rmdir(char *args)
+{
+    int statrm = rmdir(args);
+    if(statrm==-1)
+    {
+        perror("+--- Error in rmdir ");
+    }
+}
+
 
 /* list cwd contents*/
 void ash_ls()
@@ -282,7 +314,17 @@ int ash_execute(char **args)
     // An empty command was entered.
     return 1;
   }
-  if(strcmp(args[0],"cp")==0)
+  if(strcmp(args[0],"mkdir")==0)
+    {
+        char *foldername = args[1];
+        ash_mkdir(foldername);
+    }
+    else if(strcmp(args[0],"rmdir")==0)
+    {
+        char *foldername = args[1];
+        ash_rmdir(foldername);
+    }
+   else if(strcmp(args[0],"cp")==0)
     {
         char* file1 = args[1];
         char* file2 = args[2];
